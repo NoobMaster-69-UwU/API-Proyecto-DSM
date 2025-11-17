@@ -9,15 +9,20 @@ const usersRouter = require("./routes/users");
 const verifyToken = require("./middleware/auth");
 
 const app = express();
+
+// Middlewares globales
 app.use(cors());
 app.use(express.json());
 
+// Inicializar Firebase Admin
 const admin = initFirebase();
 
-// Health endpoint
-app.get("/health", (req, res) => res.json({ ok: true }));
+// Endpoint de prueba
+app.get("/health", (req, res) => {
+  res.json({ ok: true, message: "API Funcionando en Vercel 👌" });
+});
 
-// Routes
+// Rutas reales
 app.use("/events", eventsRouter(admin, verifyToken));
 app.use("/users", usersRouter(admin, verifyToken));
 
