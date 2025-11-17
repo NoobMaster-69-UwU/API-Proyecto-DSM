@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const serverless = require("serverless-http");
 
 const { initFirebase } = require("./utils/firebaseInit");
 const eventsRouter = require("./routes/events");
@@ -13,11 +14,11 @@ app.use(express.json());
 
 const admin = initFirebase();
 
-// Health
+// Health endpoint
 app.get("/health", (req, res) => res.json({ ok: true }));
 
 // Routes
 app.use("/events", eventsRouter(admin, verifyToken));
 app.use("/users", usersRouter(admin, verifyToken));
 
-module.exports = app;  
+module.exports = serverless(app);
