@@ -1,26 +1,21 @@
 const admin = require("firebase-admin");
 
-let initialized = false;
+let appInitialized = false;
 
 function initFirebase() {
-  if (!initialized) {
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  if (!appInitialized) {
+    const credentials = process.env.GOOGLE_CREDENTIALS;
 
-    if (!privateKey) {
-      console.error("FIREBASE_PRIVATE_KEY is missing");
-      throw new Error("Missing FIREBASE_PRIVATE_KEY");
+    if (!credentials) {
+      console.error("❌ GOOGLE_CREDENTIALS is missing");
+      throw new Error("Missing GOOGLE_CREDENTIALS");
     }
 
     admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: privateKey.replace(/\\n/g, "\n"),
-      }),
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET || undefined
+      credential: admin.credential.cert(JSON.parse(credentials))
     });
 
-    initialized = true;
+    appInitialized = true;
   }
 
   return admin;
